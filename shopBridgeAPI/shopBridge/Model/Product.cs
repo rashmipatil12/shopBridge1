@@ -9,5 +9,6 @@ namespace shopBridge.Model
         public string ProductName { get; set; }
         public string ProductDesc { get; set; }
         public double? ProductPrice { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

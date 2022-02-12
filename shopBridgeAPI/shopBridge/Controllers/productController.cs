@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using shopBridge.Model;
+using shopBridge.Service;
+using System.Net.Http;
 
 namespace shopBridge.Controllers
 {
@@ -14,46 +16,144 @@ namespace shopBridge.Controllers
     {
 
 
-        private readonly shopBridgeContext _context;
+        private readonly IProductService _productService;
 
-        public productController(shopBridgeContext context)
+        public productController(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
-        [HttpGet]
-        public IEnumerable<Product> GetProduct()
+        [HttpGet("GetProducts")]
+        public async Task<IActionResult> GetProduct()
         {
-            return  _context.Product.ToList();
+            ObjectResult result = null;
+            try
+            {
+                var productdata = await _productService.GetProduct();
+
+                if (productdata != null)
+                {
+                    
+                    result = new OkObjectResult(productdata);
+                   
+                }
+            }catch(Exception ex)
+            {
+                throw;
+            }
+            return  result;
         }
 
         [HttpGet("GetProductByID")]
 
-        public IEnumerable<Product> GetProduct(int productID)
+        public async Task<IActionResult> GetProduct(int productID)
         {
-            return _context.Product.Where(c=>c.ProductId==productID).ToList();
+            ObjectResult result = null;
+            try
+            {
+                var productdata = await _productService.GetProductById(productID);
+
+                if (productdata != null)
+                {
+                    result = new OkObjectResult(productdata);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return result;
         }
 
         [HttpPost("AddProduct")]
-        public int AddProduct(Product productVM)
+        public async Task<IActionResult> AddProduct(List<Product> productVM)
         {
-           _context.Product.Add(productVM);
-           var isadded = _context.SaveChanges();
-            
-            return isadded;
+            ObjectResult result = null;
+            try
+            {
+                var productdata = await _productService.AddProduct(productVM);
+
+                if (productdata != null)
+                {
+                    result = new OkObjectResult(productdata);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return result;
         }
 
 
-        [HttpPost("UpdateProduct")]
-        public int  UpdateProduct(Product productVM)
+        [HttpPut("UpdateProduct")]
+        public async Task<IActionResult> UpdateProduct(List<Product> productVM)
         {
-            Product product = _context.Product.Where(c => c.ProductId == productVM.ProductId).FirstOrDefault();
-             product.ProductPrice = productVM.ProductPrice;
-            _context.Product.Update(product);
-            var isupdated = _context.SaveChanges();
+            ObjectResult result = null;
+            try
+            {
+                var productdata = await _productService.UpdateProduct(productVM);
 
-            return isupdated;
-            
+                if (productdata != null)
+                {
+                    result = new OkObjectResult(productdata);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return result;
+
+        }
+
+
+        [HttpDelete("DeleteProductSoft")]
+        public async Task<IActionResult> DeleteProductSoft(List<int> productID)
+        {
+            ObjectResult result = null;
+            try
+            {
+                var productdata = await _productService.DeleteProductBySoft(productID);
+
+                if (productdata != null)
+                {
+                    result = new OkObjectResult(productdata);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return result;
+
+        }
+
+
+        [HttpDelete("DeleteProductHard")]
+        public async Task<IActionResult> DeleteProductHard(List<int> productID)
+        {
+            ObjectResult result = null;
+            try
+            {
+                var productdata = await _productService.DeleteProductBySoft(productID);
+
+                if (productdata != null)
+                {
+                    result = new OkObjectResult(productdata);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return result;
+
         }
     }
 }
