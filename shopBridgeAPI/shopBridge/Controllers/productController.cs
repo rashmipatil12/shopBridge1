@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 using shopBridge.Model;
 using shopBridge.Service;
 using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace shopBridge.Controllers
 {
+ //   [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class productController : ControllerBase
@@ -17,10 +24,12 @@ namespace shopBridge.Controllers
 
 
         private readonly IProductService _productService;
+       // private readonly IConfiguration _configuration;
 
         public productController(IProductService productService)
         {
             _productService = productService;
+           // _configuration = configuration;
         }
 
         [HttpGet("GetProducts")]
@@ -140,7 +149,7 @@ namespace shopBridge.Controllers
             ObjectResult result = null;
             try
             {
-                var productdata = await _productService.DeleteProductBySoft(productID);
+                var productdata = await _productService.DeleteProductByHard(productID);
 
                 if (productdata != null)
                 {
