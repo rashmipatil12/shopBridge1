@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using shopBridge.Service;
 using shopBridge.Infrastructure.Repository;
 using shopBridge.Model;
+using shopBridge.Service.Response;
 
 namespace shopBridge.Service
 {
@@ -16,6 +17,14 @@ namespace shopBridge.Service
         {
             _productRepository = productRepository;
         }
+
+
+        //Basic Authentication 
+        public bool ValidateCredentials(string username, string password)
+        {
+            return username.Equals("admin") && password.Equals("dev123");
+        }
+
 
         //Get Product List
         public async Task<List<Product>> GetProduct()
@@ -33,39 +42,90 @@ namespace shopBridge.Service
         }
 
         //Add Product
-        public async Task<int> AddProduct(List<Product> productVM)
+        public async Task<ProductResponse> AddProduct(List<Product> productVM)
         {
+            ProductResponse productResponse = new ProductResponse();
+
             var productdata = await _productRepository.AddProduct(productVM);
 
-            return productdata;
+            if(productdata>0)
+            {
+                productResponse.isCreated = true;
+                productResponse.isDeleted = false;
+                productResponse.isUpdated = false;
+            }
+            else
+            {
+                productResponse.isCreated = false;
+                productResponse.isDeleted = false;
+                productResponse.isUpdated = false;
+            }
+            return productResponse;
 
         }
 
         //Update Product
-
-        public async Task<int> UpdateProduct(List<Product> productVM)
+        
+        public async Task<ProductResponse> UpdateProduct(List<Product> productVM)
         {
-            var productdata = await _productRepository.UpdateProduct(productVM);
+            ProductResponse productResponse = new ProductResponse();
 
-            return productdata;
+            var productdata = await _productRepository.UpdateProduct(productVM);
+            if (productdata > 0)
+            {
+                productResponse.isUpdated = true;
+                productResponse.isDeleted = false;
+                productResponse.isCreated = false;
+            }
+            else
+            {
+                productResponse.isCreated = false;
+                productResponse.isDeleted = false;
+                productResponse.isUpdated = false;
+            }
+            return productResponse;
        }
 
         //Delete Product-Soft Delete
 
-        public async Task<int> DeleteProductBySoft(List<int> productId)
+        public async Task<ProductResponse> DeleteProductBySoft(List<int> productId)
         {
+            ProductResponse productResponse = new ProductResponse();
             var productdata = await _productRepository.DeleteProductBySoft(productId);
-
-            return productdata;
+            if (productdata > 0)
+            {
+                productResponse.isUpdated = false;
+                productResponse.isDeleted = true;
+                productResponse.isCreated = false;
+            }
+            else
+            {
+                productResponse.isCreated = false;
+                productResponse.isDeleted = false;
+                productResponse.isUpdated = false;
+            }
+            return productResponse;
         }
 
         //Delete Product-Hard Delete
 
-        public async Task<int> DeleteProductByHard(List<int> productID)
+        public async Task<ProductResponse> DeleteProductByHard(List<int> productID)
         {
+            ProductResponse productResponse = new ProductResponse();
             var productdata = await _productRepository.DeleteProductByHard(productID);
-
-            return productdata;
+            if (productdata > 0)
+            {
+                productResponse.isUpdated = false;
+                productResponse.isDeleted = true;
+                productResponse.isCreated = false;
+            }
+            else
+            {
+                productResponse.isCreated = false;
+                productResponse.isDeleted = false;
+                productResponse.isUpdated = false;
+            }
+            return productResponse;
         }
 
     }
