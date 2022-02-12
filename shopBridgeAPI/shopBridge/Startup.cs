@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
+using shopBridge.Infrastructure.Repository;
+using shopBridge.Service;
 
 namespace shopBridge
 {
@@ -36,7 +38,8 @@ namespace shopBridge
             services.AddControllers();
 
             services.AddDbContext<shopBridge.Model.shopBridgeContext>();
-          
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<IProductService, ProductService>();
             services.AddSwaggerGen();
         }
 
