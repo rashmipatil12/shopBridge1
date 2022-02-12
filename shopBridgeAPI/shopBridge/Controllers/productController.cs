@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace shopBridge.Controllers
 {
- //   [Authorize]
+    [BasicAuthorization]
     [ApiController]
     [Route("[controller]")]
     public class productController : ControllerBase

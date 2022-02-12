@@ -9,7 +9,6 @@ namespace shopBridge.Service
 {
     public interface IProductService
     {
-        bool ValidateCredentials(string username, string password);
         Task<List<Product>> GetProduct();
 
         Task<List<Product>> GetProductById(int productID);
