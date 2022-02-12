@@ -15,6 +15,7 @@ using shopBridge.Service;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using shopBridge.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace shopBridge
 {
@@ -70,13 +71,20 @@ namespace shopBridge
                     }
                 });
             });
-            
-            services.AddAuthentication("BasicAuthentication")
-                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+            services
+                .AddAuthentication()
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", options => { });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("BasicAuthentication", new AuthorizationPolicyBuilder("BasicAuthentication").RequireAuthenticatedUser().Build());
+            });
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //Enable CORS
             app.UseCors( options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

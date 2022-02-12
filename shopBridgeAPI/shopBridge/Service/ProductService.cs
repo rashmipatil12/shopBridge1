@@ -18,14 +18,6 @@ namespace shopBridge.Service
             _productRepository = productRepository;
         }
 
-
-        //Basic Authentication 
-        public bool ValidateCredentials(string username, string password)
-        {
-            return username.Equals("admin") && password.Equals("dev123");
-        }
-
-
         //Get Product List
         public async Task<List<Product>> GetProduct()
         {
